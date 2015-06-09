@@ -1,17 +1,37 @@
 <?php
 $pointLocation = new pointLocation();
-$points = array("50 70","70 40","-20 30","100 10","-10 -10","40 -20","110 -20","100 50");
+if (($manzanas = fopen("manzanas3.csv", "r")) !== FALSE ) {
+	$cont=0;
+	$polygoncsv=array();
+    while (($mnz = fgetcsv($manzanas, ",")) !== FALSE && $cont<=9) {
+    	if ($cont>=2){
+    		$nom_poly=$mnz[1];
+    		
+    		var_dump($mnz[2]);
+    		echo "<br>";
+    		//$polygon[]=array($mnz[1],$mnz[2],$mnz[3]);
+    		array_push($polygoncsv,$mnz[2]." ".$mnz[3]);
+    	}
+    	$cont++;
+    }
+    if (($casas = fopen("Alto_Selva_Alegre_prueba.csv", "r")) !== FALSE ) {
+    	$i=0;
 
-$polygon = array("-50 30","50 70","100 50","80 10","110 -10","110 -30","-20 -50","-30 -40","10 -10","-10 10","-30 -20","-50 30");
-// Las últimas coordenadas tienen que ser las mismas que las primeras, para "cerrar el círculo"
-foreach($points as $key => $point) {
-    var_dump($point);
-    echo "<br>";
-    //echo "point " . ($key+1) . " ($point): " . $pointLocation->pointInPolygon($point, $polygon) . "<br>";
+    	while (($casa = fgetcsv($casas, ",")) !== FALSE) {
+    		if ($i>=1) {
+    			$nom_point=$casa[0];
+	    		$pointcsv=$casa[5]." ".$casa[6];
+	    		//var_dump($pointcsv);
+	    		//echo "<br>";
+	    		//echo $nom_point." esta " . $pointLocation->pointInPolygon($pointcsv, $polygoncsv) ." de ".$nom_poly ."<br>";
+			
+    		}
+    		$i++;
+    	}
+    }
+    
+
 }
-
-
-
 
 /*
 Descripción: El algoritmo del punto en un polígono permite comprobar mediante
@@ -93,7 +113,6 @@ class pointLocation {
     }
  
 }
-
 
 
 

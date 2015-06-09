@@ -1,35 +1,72 @@
 <?php
 $pointLocation = new pointLocation();
-if (($manzanas = fopen("manzanas3.csv", "r")) !== FALSE ) {
+
+if (($casas = fopen("Alto_Selva_Alegre_290911.csv", "r")) !== FALSE ) {
+    $cont=0;
+    while (($casa = fgetcsv($casas, ",")) !== FALSE) {
+        if ($cont>=1) {
+            $pointcsv[]=array($casa[0],$casa[5]." ".$casa[6]);
+            //echo $nom_point." esta " . $pointLocation->pointInPolygon($pointcsv, $polygoncsv) ." de ".$nom_poly ."<br>";            
+        }
+        $cont++;
+    }
+}
+//var_dump($pointcsv);
+//echo "<br>";
+if (($manzanas = fopen("Mz Alto Selva Alebre 2732011.csv", "r")) !== FALSE ) {
 	$cont=0;
-	$polygoncsv=array();
-    while (($mnz = fgetcsv($manzanas, ",")) !== FALSE && $cont<=9) {
-    	if ($cont>=2){
-    		$nom_poly=$mnz[1];
-    		
-    		//var_dump($mnz[2]);
-    		//echo "<br>";
-    		//$polygon[]=array($mnz[1],$mnz[2],$mnz[3]);
-    		array_push($polygoncsv,$mnz[2]." ".$mnz[3]);
+    while (($mnz = fgetcsv($manzanas, ",")) !== FALSE ) {
+    	if ($cont>=2 && $cont<20){
+    		if ( $mnz[2]!== " ") {
+                $nom_poly=$mnz[1];
+                $polygoncsv[]=$mnz[2]." ".$mnz[3];
+                
+            }
+    		else{
+                array_push($polygoncsv, $polygoncsv[0]);
+                //var_dump($polygoncsv);
+                //echo "<br>";
+                //echo count($pointcsv);
+                for ($i=0; $i < count($pointcsv); $i++) { 
+                    if ($pointLocation->pointInPolygon($pointcsv[$i][1], $polygoncsv)==="inside") {
+                        echo $pointcsv[$i][0]." esta dentro de ".$nom_poly;
+                        echo "<br>";
+                        unset($pointcsv[$i]);
+                        $aux=$pointcsv;
+                    }
+                    else{
+                        
+                    }
+                } 
+                var_dump($aux);
+
+            }
+            
+    		//array_push($polygoncsv,$mnz[1],$mnz[2]." ".$mnz[3]);
+            
+            //echo "<br>";
     	}
     	$cont++;
+
     }
-    if (($casas = fopen("Alto_Selva_Alegre_290911.csv", "r")) !== FALSE ) {
+      
+    /*
+    if (($casas = fopen("Alto_Selva_Alegre_prueba.csv", "r")) !== FALSE ) {
     	$i=0;
 
     	while (($casa = fgetcsv($casas, ",")) !== FALSE) {
     		if ($i>=1) {
     			$nom_point=$casa[0];
-	    		$pointcsv=array($casa[5]." ".$casa[6]);
+	    		$pointcsv=$casa[5]." ".$casa[6];
 	    		//var_dump($pointcsv);
 	    		//echo "<br>";
-	    		echo $nom_point." esta " . $pointLocation->pointInPolygon($pointcsv, $polygoncsv) ." de ".$nom_poly ."<br>";
+	    		//echo $nom_point." esta " . $pointLocation->pointInPolygon($pointcsv, $polygoncsv) ." de ".$nom_poly ."<br>";
 			
     		}
     		$i++;
     	}
     }
-    
+    */
 
 }
 

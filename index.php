@@ -1,6 +1,8 @@
 <?php
 $pointLocation = new pointLocation();
 
+$file = fopen("point_to_poly_5.csv","w");
+
 if (($casas = fopen("Alto_Selva_Alegre_290911.csv", "r")) !== FALSE ) {
     $cont=0;
     while (($casa = fgetcsv($casas, ",")) !== FALSE) {
@@ -16,7 +18,7 @@ if (($casas = fopen("Alto_Selva_Alegre_290911.csv", "r")) !== FALSE ) {
 if (($manzanas = fopen("Mz Alto Selva Alebre 2732011.csv", "r")) !== FALSE ) {
 	$cont=0;
     while (($mnz = fgetcsv($manzanas, ",")) !== FALSE ) {
-    	if ($cont>=2 && $cont<20){
+    	if ($cont>=2 && $cont<6003){
     		if ( $mnz[2]!== " ") {
                 $nom_poly=$mnz[1];
                 $polygoncsv[]=$mnz[2]." ".$mnz[3];
@@ -24,32 +26,22 @@ if (($manzanas = fopen("Mz Alto Selva Alebre 2732011.csv", "r")) !== FALSE ) {
             }
     		else{
                 array_push($polygoncsv, $polygoncsv[0]);
-                //var_dump($polygoncsv);
-                //echo "<br>";
-                //echo count($pointcsv);
                 for ($i=0; $i < count($pointcsv); $i++) { 
                     if ($pointLocation->pointInPolygon($pointcsv[$i][1], $polygoncsv)==="inside") {
-                        echo $pointcsv[$i][0]." esta dentro de ".$nom_poly;
-                        echo "<br>";
+                        //echo $pointcsv[$i][0]." esta dentro de ".$nom_poly;
+                        //echo "<br>";
+                        fputcsv( $file, array($pointcsv[$i][0],$nom_poly));
                         unset($pointcsv[$i]);
-                        $aux=$pointcsv;
                     }
-                    else{
-                        
-                    }
-                } 
-                var_dump($aux);
-
+                }
+                $pointcsv = array_values($pointcsv); 
+                unset($polygoncsv);
             }
-            
-    		//array_push($polygoncsv,$mnz[1],$mnz[2]." ".$mnz[3]);
-            
-            //echo "<br>";
     	}
+
     	$cont++;
 
     }
-      
     /*
     if (($casas = fopen("Alto_Selva_Alegre_prueba.csv", "r")) !== FALSE ) {
     	$i=0;
@@ -69,7 +61,7 @@ if (($manzanas = fopen("Mz Alto Selva Alebre 2732011.csv", "r")) !== FALSE ) {
     */
 
 }
-
+echo "Finalizado ...";
 /*
 Descripción: El algoritmo del punto en un polígono permite comprobar mediante
 programación si un punto está dentro de un polígono o fuera de ello.
